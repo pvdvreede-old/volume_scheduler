@@ -49,6 +49,7 @@ public class VSEditActivity extends Activity {
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
+            	saveState();
                 setResult(RESULT_OK);
                 finish();
             }
@@ -74,14 +75,14 @@ public class VSEditActivity extends Activity {
 	@Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //saveState();
+        saveState();
         outState.putSerializable(VSAdapterDb.KEY_ROWID, mRowId);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //saveState();
+        saveState();
     }
 
     @Override
@@ -99,6 +100,15 @@ public class VSEditActivity extends Activity {
 //            mBodyText.setText(schedule.getString(
 //            		schedule.getColumnIndexOrThrow(VSAdapterDb.KEY_BODY)));
         }
+    }
+    
+    private void saveState() {
+    	String startText = this.mStart.getText().toString();
+    	String endText = this.mEnd.getText().toString();
+    	int start = Integer.parseInt(startText.replace("Start time: ", "").replace(":", ""));
+    	int end = Integer.parseInt(endText.replace("End time: ", "").replace(":", ""));
+    	String name = this.mNameText.getText().toString();
+    	this.mDbHelper.createSchedule(name, start, end);
     }
     
     protected Dialog onCreateDialog(int id) {

@@ -91,7 +91,7 @@ public class VSAdapterDb {
 
     }
 	
-	public long createSchedule(String name, String[] days, long start, long end) {
+	public long createSchedule(String name, int start, int end) {
 		ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_NAME, name);
         initialValues.put(KEY_ACTIVE, 0);
