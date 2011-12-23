@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <item android:id="@+id/schedule_quiet" android:title="@string/ab_schedule" android:visible="true" android:showAsAction="ifRoom|withText" android:enabled="true"></item>
+    <item android:id="@+id/new_schedule" android:title="@string/menu_insert" android:visible="true" android:showAsAction="ifRoom" android:enabled="true"></item>
+    <item android:id="@+id/ab_settings" android:title="@string/settings" android:showAsAction="ifRoom|withText" android:visible="true" android:enabled="true"></item>
     
 
 </menu>

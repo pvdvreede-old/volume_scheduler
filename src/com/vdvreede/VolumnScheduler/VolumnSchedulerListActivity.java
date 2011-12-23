@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TimePicker;
 
@@ -27,56 +28,20 @@ public class VolumnSchedulerListActivity extends ListActivity {
 
 	private final String TAG = "VSListActivity";
 
-	private static final int INSERT_ID = Menu.FIRST;
-	private static final int DELETE_ID = Menu.FIRST + 1;
 	private static final int DIALOG_QUIET_SET = 11;
 
 	public static final int SILENT_ENABLED_NOTIFICATION = 44489;
 
 	private static final int ACTIVITY_CREATE = 0;
-	private static final int ENABLE_VOLUME_REQUEST = 778368;
 
 	private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
-		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-
-			// set Alarm manager to callback in time period
-			// get a Calendar object with current time
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.MINUTE, minute);
-			cal.add(Calendar.HOUR, hourOfDay);
-			Context ctx = getApplicationContext();
-			Intent intent = new Intent(ctx, EnableVolumnReceiver.class);
-			PendingIntent sender = PendingIntent.getBroadcast(ctx,
-					ENABLE_VOLUME_REQUEST, intent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-
-			AlarmManager alarm_man = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-			alarm_man.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
-					sender);
-
-			// create notification with ability to cancel silence
-			NotificationManager not_man = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-			int icon = R.drawable.app_icon;
-			CharSequence tickerText = "Volume Scheduler silence enabled.";
-			long when = System.currentTimeMillis();
-			Notification notification = new Notification(icon, tickerText, when);
-			CharSequence contentTitle = "Volume Scheduler";
-			CharSequence contentText = "Silence enabled, expires at "
-					+ cal.getTime().toLocaleString() + ". Press to cancel.";
-			Intent notificationIntent = new Intent(ctx,
-					EnableVolumnReceiver.class);
-			PendingIntent contentIntent = PendingIntent.getBroadcast(ctx,
-					ENABLE_VOLUME_REQUEST, notificationIntent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-			notification.setLatestEventInfo(ctx, contentTitle, contentText,
-					contentIntent);
-			notification.flags |= Notification.FLAG_ONGOING_EVENT;
-			notification.flags |= Notification.FLAG_AUTO_CANCEL;
-			not_man.notify(SILENT_ENABLED_NOTIFICATION, notification);
-
-			// set volume to silent
-			AudioManager audio_man = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-			audio_man.setRingerMode(AudioManager.RINGER_MODE_SILENT);
+		public void onTimeSet(TimePicker view, int hours, int minutes) {		
+			Intent intent = new Intent(getApplicationContext(), DisableVolumnReceiver.class);
+			intent.putExtra("hours", hours);
+			intent.putExtra("minutes", minutes);
+			intent.putExtra("ringer_mode", 0);
+			
+			getApplicationContext().sendBroadcast(intent);			
 		}
 	};
 
@@ -95,14 +60,13 @@ public class VolumnSchedulerListActivity extends ListActivity {
 		super.onCreateOptionsMenu(menu);
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_ab, menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_insert);
 		return true;
 	}
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
-		case INSERT_ID:
+		case R.id.new_schedule:
 			this.createSchedule();
 			return true;
 		case R.id.schedule_quiet:

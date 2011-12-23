@@ -1,6 +1,8 @@
 package com.vdvreede.VolumnScheduler;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -11,11 +13,14 @@ import android.widget.TimePicker;
 public class VSEditActivity extends Activity {
 
 	private EditText mNameText;
-    private TimePicker mStartText;
-    private TimePicker mEndText;
+    private Button mStart;
+    private Button mEnd;
     private Long mRowId;
     private VSAdapterDb mDbHelper;
-	
+    
+    private static final int START_DIALOG = 78768;
+    private static final int END_DIALOG = 45334; 
+    
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,8 +31,8 @@ public class VSEditActivity extends Activity {
         setTitle(R.string.edit_schedule);
 
         mNameText = (EditText) findViewById(R.id.tb_name);
-        mStartText = (TimePicker) findViewById(R.id.tp_start);
-        mEndText = (TimePicker) findViewById(R.id.tp_end);
+        mStart = (Button) findViewById(R.id.bt_start_time);
+        mEnd = (Button) findViewById(R.id.bt_end_time);
         
         Button saveButton = (Button) findViewById(R.id.bt_edit_save);
 
@@ -49,6 +54,21 @@ public class VSEditActivity extends Activity {
             }
 
         });
+		
+		mStart.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				showDialog(START_DIALOG);
+			}
+		});
+		mEnd.setOnClickListener(new View.OnClickListener() {
+			
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				showDialog(END_DIALOG);
+			}
+		});
     }
 	
 	@Override
@@ -81,5 +101,30 @@ public class VSEditActivity extends Activity {
         }
     }
     
-
+    protected Dialog onCreateDialog(int id) {
+		switch (id) {
+		case START_DIALOG:
+			TimePickerDialog tpd = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+				
+				public void onTimeSet(TimePicker view, int hours, int minutes) {
+					// TODO Auto-generated method stub
+					mStart.setText("Start time: " + Integer.toString(hours) + ":" + Integer.toString(minutes));
+				}
+			}, 12, 12, true);
+			tpd.setTitle("Set start time");
+			return tpd;
+			
+		case END_DIALOG:
+			TimePickerDialog tpd1 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
+				
+				public void onTimeSet(TimePicker view, int hours, int minutes) {
+					// TODO Auto-generated method stub
+					mEnd.setText("End time: " + Integer.toString(hours) + ":" + Integer.toString(minutes));
+				}
+			}, 12, 12, true);
+			tpd1.setTitle("Set end time");
+			return tpd1;
+		}
+		return null;
+	}
 }

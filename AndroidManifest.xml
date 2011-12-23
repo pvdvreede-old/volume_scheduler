@@ -20,6 +20,7 @@
         </activity>
         <activity android:name="VSEditActivity"></activity>
         <receiver android:name="EnableVolumnReceiver" android:permission="android.permission.MODIFY_AUDIO_SETTINGS"></receiver>
+        <receiver android:name="DisableVolumnReceiver"></receiver>
     </application>
 
 </manifest>

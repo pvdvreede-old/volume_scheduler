@@ -10,5 +10,6 @@
     <string name="edit_schedule">Edit Schedule</string>
     <string name="new_end">End time</string>
     <string name="ab_schedule">Schedule Quiet</string>
+    <string name="settings">Settings</string>
 
 </resources>
