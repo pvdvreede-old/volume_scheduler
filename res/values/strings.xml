@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, VolumnSchedulerListActivity!</string>
+    <string name="app_name">Volume Scheduler</string>
+    <string name="no_schedules">There are currently no schedules. Create a new one from the menu.</string>
+    <string name="menu_insert">Create new schedule</string>
+    <string name="new_name">Name</string>
+    <string name="new_start">Start time</string>
+    <string name="edit_schedule">Edit Schedule</string>
+    <string name="new_end">End time</string>
+    <string name="ab_schedule">Schedule Quiet</string>
+
+</resources>
