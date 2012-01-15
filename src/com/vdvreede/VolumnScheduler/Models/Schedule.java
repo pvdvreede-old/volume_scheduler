@@ -1,5 +1,8 @@
 package com.vdvreede.VolumnScheduler.Models;
 
+import java.util.Arrays;
+import java.util.List;
+
 import android.database.Cursor;
 
 public class Schedule {
@@ -24,7 +27,7 @@ public class Schedule {
 	public String start;
 	public String end;
 	public int active;
-	public String[] days;
+	public List<String> days;
 
 	public Schedule(int active, Long id, String name, String start, String end,
 			String days) {
@@ -34,6 +37,16 @@ public class Schedule {
 		this.end = end;
 		this.active = active;
 		this.convertDaysString(days);
+	}
+	
+	public Schedule(int active, Long id, String name, String start, String end,
+			List<String> days) {
+		this.id = id;
+		this.name = name;
+		this.start = start;
+		this.end = end;
+		this.active = active;
+		this.days = days;
 	}
 	
 	public Schedule(Cursor schedCursor) {
@@ -46,7 +59,8 @@ public class Schedule {
 	}
 
 	public void convertDaysString(String days) {
-		this.days = days.split(",");
+		String[] dayArray = days.split(",");
+		this.days = Arrays.asList(dayArray);
 	}
 	
 	public String convertDaysArray() {
@@ -54,6 +68,6 @@ public class Schedule {
 		for (String day : this.days) {
 			days += day + ",";
 		}
-		return days.substring(0, days.length() - 2);
+		return days.substring(0, days.length() - 1);
 	}
 }

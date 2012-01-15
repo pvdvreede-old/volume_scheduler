@@ -1,5 +1,8 @@
 package com.vdvreede.VolumnScheduler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.vdvreede.VolumnScheduler.Models.Schedule;
 
 import android.app.Activity;
@@ -9,6 +12,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TimePicker;
 
@@ -17,6 +21,13 @@ public class VSEditActivity extends Activity {
 	private EditText mNameText;
     private Button mStart;
     private Button mEnd;
+    private CheckBox mMon;
+    private CheckBox mTue;
+    private CheckBox mWed;
+    private CheckBox mThu;
+    private CheckBox mFri;
+    private CheckBox mSat;
+    private CheckBox mSun;
     private Long mRowId;
     private VSAdapterDb mDbHelper;
     
@@ -36,6 +47,14 @@ public class VSEditActivity extends Activity {
         mStart = (Button) findViewById(R.id.bt_start_time);
         mEnd = (Button) findViewById(R.id.bt_end_time);
         
+        mMon = (CheckBox) findViewById(R.id.cb_mon);
+        mTue = (CheckBox) findViewById(R.id.cb_tue);
+        mWed = (CheckBox) findViewById(R.id.cb_wed);
+        mThu = (CheckBox) findViewById(R.id.cb_thu);
+        mFri = (CheckBox) findViewById(R.id.cb_fri);
+        mSat = (CheckBox) findViewById(R.id.cb_sat);
+        mSun = (CheckBox) findViewById(R.id.cb_sun);
+        
         Button saveButton = (Button) findViewById(R.id.bt_edit_save);
 
         mRowId = (savedInstanceState == null) ? null :
@@ -50,8 +69,7 @@ public class VSEditActivity extends Activity {
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View view) {
-            	saveState();
+            public void onClick(View view) {           	
                 setResult(RESULT_OK);
                 finish();
             }
@@ -101,7 +119,61 @@ public class VSEditActivity extends Activity {
             this.mNameText.setText(sched.name);
             this.mStart.setText("Start time: " + sched.start);
             this.mEnd.setText("End time: " + sched.start);
+            this.populateCheckboxes(sched.days);
         }
+    }
+    
+    private void populateCheckboxes(List<String> activeDays) {
+    	for (String day : activeDays) {
+    		if (day == "Mon") {
+    			mMon.setChecked(true);
+    		}
+    		if (day == "Tue") {
+    			mTue.setChecked(true);
+    		}
+    		if (day == "Wed") {
+    			mWed.setChecked(true);
+    		}
+    		if (day == "Thu") {
+    			mThu.setChecked(true);
+    		}
+    		if (day == "Fri") {
+    			mFri.setChecked(true);
+    		}
+    		if (day == "Sat") {
+    			mSat.setChecked(true);
+    		}
+    		if (day == "Sun") {
+    			mSun.setChecked(true);
+    		}
+    	}
+    }
+    
+    private List<String> getDaysArray() {
+    	List<String> days = new ArrayList<String>();
+    	if (mMon.isChecked()) {
+    		days.add("Mon");
+    	}
+    	if (mTue.isChecked()) {
+    		days.add("Tue");
+    	}
+    	if (mWed.isChecked()) {
+    		days.add("Wed");
+    	}
+    	if (mThu.isChecked()) {
+    		days.add("Thu");
+    	}
+    	if (mFri.isChecked()) {
+    		days.add("Fri");
+    	}
+    	if (mSat.isChecked()) {
+    		days.add("Sat");
+    	}
+    	if (mSun.isChecked()) {
+    		days.add("Sun");
+    	}
+    	
+    	return days;
     }
     
     private void saveState() {
@@ -109,8 +181,8 @@ public class VSEditActivity extends Activity {
     	String endText = this.mEnd.getText().toString();
     	int start = Integer.parseInt(startText.replace("Start time: ", "").replace(":", ""));
     	int end = Integer.parseInt(endText.replace("End time: ", "").replace(":", ""));
-    	String name = this.mNameText.getText().toString();
-    	Schedule schedule = new Schedule(0, null, name, String.valueOf(start), String.valueOf(end), "m,t");
+    	String name = this.mNameText.getText().toString();  	
+    	Schedule schedule = new Schedule(0, null, name, String.valueOf(start), String.valueOf(end), this.getDaysArray());
     	this.mDbHelper.createSchedule(schedule);
     }
     

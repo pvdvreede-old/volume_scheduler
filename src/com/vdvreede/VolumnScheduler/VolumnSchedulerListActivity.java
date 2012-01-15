@@ -166,12 +166,12 @@ public class VolumnSchedulerListActivity extends ListActivity {
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
 		String[] from = new String[] { Schedule.KEY_NAME, Schedule.KEY_START,
-				Schedule.KEY_END, Schedule.KEY_ACTIVE };
+				Schedule.KEY_END, Schedule.KEY_ACTIVE, Schedule.KEY_DAYS };
 
 		// and an array of the fields we want to bind those fields to (in this
 		// case just text1)
 		int[] to = new int[] { R.id.tv_name, R.id.tv_start, R.id.tv_end,
-				R.id.tv_active };
+				R.id.tv_active, R.id.tv_days };
 
 		// Now create a simple cursor adapter and set it to display
 		SimpleCursorAdapter schedules = new SimpleCursorAdapter(this,
