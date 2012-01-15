@@ -1,5 +1,7 @@
 package com.vdvreede.VolumnScheduler;
 
+import com.vdvreede.VolumnScheduler.Models.Schedule;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -37,14 +39,14 @@ public class VSEditActivity extends Activity {
         Button saveButton = (Button) findViewById(R.id.bt_edit_save);
 
         mRowId = (savedInstanceState == null) ? null :
-            (Long) savedInstanceState.getSerializable(VSAdapterDb.KEY_ROWID);
+            (Long) savedInstanceState.getSerializable(Schedule.KEY_ROWID);
 		if (mRowId == null) {
 			Bundle extras = getIntent().getExtras();
-			mRowId = extras != null ? extras.getLong(VSAdapterDb.KEY_ROWID)
+			mRowId = extras != null ? extras.getLong(Schedule.KEY_ROWID)
 									: null;
 		}
 
-		//populateFields();
+		populateFields();
 
 		saveButton.setOnClickListener(new View.OnClickListener() {
 
@@ -76,7 +78,7 @@ public class VSEditActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         saveState();
-        outState.putSerializable(VSAdapterDb.KEY_ROWID, mRowId);
+        outState.putSerializable(Schedule.KEY_ROWID, mRowId);
     }
 
     @Override
@@ -93,12 +95,12 @@ public class VSEditActivity extends Activity {
 
     private void populateFields() {
         if (mRowId != null) {
-            Cursor schedule = mDbHelper.getSchedule(mRowId);
-            startManagingCursor(schedule);
-//            mTitleText.setText(schedule.getString(
-//            		schedule.getColumnIndexOrThrow(VSAdapterDb.KEY_TITLE)));
-//            mBodyText.setText(schedule.getString(
-//            		schedule.getColumnIndexOrThrow(VSAdapterDb.KEY_BODY)));
+            Cursor schedCursor = mDbHelper.getSchedule(mRowId);
+            startManagingCursor(schedCursor);
+            Schedule sched = new Schedule(schedCursor);
+            this.mNameText.setText(sched.name);
+            this.mStart.setText("Start time: " + sched.start);
+            this.mEnd.setText("End time: " + sched.start);
         }
     }
     
@@ -108,7 +110,8 @@ public class VSEditActivity extends Activity {
     	int start = Integer.parseInt(startText.replace("Start time: ", "").replace(":", ""));
     	int end = Integer.parseInt(endText.replace("End time: ", "").replace(":", ""));
     	String name = this.mNameText.getText().toString();
-    	this.mDbHelper.createSchedule(name, start, end);
+    	Schedule schedule = new Schedule(0, null, name, String.valueOf(start), String.valueOf(end), "m,t");
+    	this.mDbHelper.createSchedule(schedule);
     }
     
     protected Dialog onCreateDialog(int id) {

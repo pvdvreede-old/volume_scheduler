@@ -2,6 +2,8 @@ package com.vdvreede.VolumnScheduler;
 
 import java.util.Calendar;
 
+import com.vdvreede.VolumnScheduler.Models.Schedule;
+
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.ListActivity;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TimePicker;
@@ -98,19 +101,24 @@ public class VolumnSchedulerListActivity extends ListActivity {
 		super.onActivityResult(requestCode, resultCode, intent);
 		fillData();
 	}
-
+	
+//	private void enableSchedule(String id) {
+//		Intent intent = new Intent(getApplicationContext(), DisableVolumnReceiver.class);
+//		intent.putExtra("hours", hours);
+//		intent.putExtra("minutes", minutes);
+//		intent.putExtra("ringer_mode", 0);
+//		
+//		getApplicationContext().sendBroadcast(intent);
+//	}
+	
 	private void fillData() {
 		Cursor schedCursor = mDbHelper.getAllSchedules();
-		Log.d(TAG,
-				"Got all schedules with count of: "
-						+ Integer.toString(schedCursor.getCount()));
+		Log.d(TAG, "Got all schedules with count of: " + Integer.toString(schedCursor.getCount()));
 		startManagingCursor(schedCursor);
 
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
-		String[] from = new String[] { VSAdapterDb.KEY_NAME,
-				VSAdapterDb.KEY_ACTIVE, VSAdapterDb.KEY_START };// + " = " +
-																// VSAdapterDb.COL_END};
+		String[] from = new String[] { Schedule.KEY_NAME,Schedule.KEY_ACTIVE, Schedule.KEY_START };
 
 		// and an array of the fields we want to bind those fields to (in this
 		// case just text1)
