@@ -29,7 +29,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 /**
  * @author paul
- *
+ * 
  */
 public class VolumnSchedulerListActivity extends ListActivity {
 
@@ -43,6 +43,7 @@ public class VolumnSchedulerListActivity extends ListActivity {
 
 	private static final int ACTIVITY_CREATE = 0;
 	private static final int SCHEDULE_DELETE = 11;
+	private static final int SCHEDULE_TOGGLE = 13;
 	private static final int SCHEDULE_EDIT = 12;
 
 	private TimePickerDialog.OnTimeSetListener mTimeSetListener = new TimePickerDialog.OnTimeSetListener() {
@@ -63,7 +64,7 @@ public class VolumnSchedulerListActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.vs_mainlist);
 		this.mDbHelper = new VSAdapterDb(this);
-		this.mDbHelper.open();		
+		this.mDbHelper.open();
 		this.fillData();
 		this.registerForContextMenu(this.getListView());
 	}
@@ -90,8 +91,11 @@ public class VolumnSchedulerListActivity extends ListActivity {
 		return super.onMenuItemSelected(featureId, item);
 	}
 
-	/* (non-Javadoc)
-	 * @see android.app.ListActivity#onListItemClick(android.widget.ListView, android.view.View, int, long)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.ListActivity#onListItemClick(android.widget.ListView,
+	 * android.view.View, int, long)
 	 */
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -101,12 +105,13 @@ public class VolumnSchedulerListActivity extends ListActivity {
 		i.putExtra(Schedule.KEY_ROWID, id);
 		startActivityForResult(i, SCHEDULE_EDIT);
 	}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, SCHEDULE_DELETE, 0, R.string.context_menu_delete);
+		menu.add(0, SCHEDULE_TOGGLE, 0, R.string.context_menu_toggle);
 	}
 
 	@Override
@@ -116,6 +121,12 @@ public class VolumnSchedulerListActivity extends ListActivity {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 					.getMenuInfo();
 			mDbHelper.deleteSchedule(info.id);
+			fillData();
+			return true;
+		case SCHEDULE_TOGGLE:
+			AdapterContextMenuInfo info1 = (AdapterContextMenuInfo) item
+					.getMenuInfo();
+			mDbHelper.toggleSchedule(info1.id);
 			fillData();
 			return true;
 		}
@@ -154,12 +165,13 @@ public class VolumnSchedulerListActivity extends ListActivity {
 
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
-		String[] from = new String[] { Schedule.KEY_NAME,
-				Schedule.KEY_START, Schedule.KEY_END, Schedule.KEY_ACTIVE };
+		String[] from = new String[] { Schedule.KEY_NAME, Schedule.KEY_START,
+				Schedule.KEY_END, Schedule.KEY_ACTIVE };
 
 		// and an array of the fields we want to bind those fields to (in this
 		// case just text1)
-		int[] to = new int[] { R.id.tv_name,  R.id.tv_start, R.id.tv_end, R.id.tv_active };
+		int[] to = new int[] { R.id.tv_name, R.id.tv_start, R.id.tv_end,
+				R.id.tv_active };
 
 		// Now create a simple cursor adapter and set it to display
 		SimpleCursorAdapter schedules = new SimpleCursorAdapter(this,

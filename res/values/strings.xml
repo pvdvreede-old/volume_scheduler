@@ -11,5 +11,6 @@
     <string name="settings">Settings</string>
     <string name="vibrate">Vibrate</string>
     <string name="context_menu_delete">Delete Schedule</string>
+    <string name="context_menu_toggle">Toggle schedule (enable/disable)</string>
 
 </resources>

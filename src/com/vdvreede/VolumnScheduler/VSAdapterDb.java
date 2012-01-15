@@ -13,15 +13,13 @@ import android.util.Log;
 public class VSAdapterDb {
 
 	public static final String DATABASE_NAME = "VolumnScheduler";
-	
+
 	public static final int DATABASE_VERSION = 1;
 	public static final String TAG = "VSAdapterDb";
 
 	private final Context mContext;
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
-
-	
 
 	private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -31,7 +29,8 @@ public class VSAdapterDb {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			Log.d(TAG, "Creating database with SQL: " + Schedule.DATABASE_CREATE);
+			Log.d(TAG, "Creating database with SQL: "
+					+ Schedule.DATABASE_CREATE);
 			db.execSQL(Schedule.DATABASE_CREATE);
 		}
 
@@ -59,22 +58,56 @@ public class VSAdapterDb {
 	}
 
 	public Cursor getAllSchedules() {
-		return mDb.query(Schedule.SCHEDULE_TABLE, new String[] { Schedule.KEY_ROWID, Schedule.KEY_NAME,
-				Schedule.KEY_ACTIVE, Schedule.KEY_DAYS, Schedule.KEY_START, Schedule.KEY_END }, null, null, null,
-				null, null);
+		return mDb.query(Schedule.SCHEDULE_TABLE, new String[] {
+				Schedule.KEY_ROWID, Schedule.KEY_NAME, Schedule.KEY_ACTIVE,
+				Schedule.KEY_DAYS, Schedule.KEY_START, Schedule.KEY_END },
+				null, null, null, null, null);
+	}
+
+	public boolean enableSchedule(long rowId) {
+		ContentValues args = new ContentValues();
+		args.put(Schedule.KEY_ACTIVE, 1);
+
+		return mDb.update(Schedule.SCHEDULE_TABLE, args, Schedule.KEY_ROWID
+				+ "=" + rowId, null) > 0;
+	}
+
+	public boolean disableSchedule(long rowId) {
+		ContentValues args = new ContentValues();
+		args.put(Schedule.KEY_ACTIVE, 0);
+
+		return mDb.update(Schedule.SCHEDULE_TABLE, args, Schedule.KEY_ROWID
+				+ "=" + rowId, null) > 0;
+	}
+	
+	public boolean toggleSchedule(long rowId) {		
+		Schedule sched = this.getScheduleObj(rowId);
+		if (sched.active == 1) {
+			return this.disableSchedule(rowId);
+		} else if (sched.active == 0) {
+			return this.enableSchedule(rowId);
+		} else {
+			throw new NullPointerException("Schedule active field contains unknown value.");
+		}				
 	}
 
 	public Cursor getSchedule(long rowId) throws SQLException {
 
-		Cursor mCursor = mDb.query(true, Schedule.SCHEDULE_TABLE,
-				new String[] { Schedule.KEY_ROWID, Schedule.KEY_NAME, Schedule.KEY_ACTIVE, Schedule.KEY_DAYS,
-				Schedule.KEY_START, Schedule.KEY_END }, Schedule.KEY_ROWID + "=" + rowId, null,
-				null, null, null, null);
+		Cursor mCursor = mDb.query(true, Schedule.SCHEDULE_TABLE, new String[] {
+				Schedule.KEY_ROWID, Schedule.KEY_NAME, Schedule.KEY_ACTIVE,
+				Schedule.KEY_DAYS, Schedule.KEY_START, Schedule.KEY_END },
+				Schedule.KEY_ROWID + "=" + rowId, null, null, null, null, null);
 
 		if (mCursor != null) {
 			mCursor.moveToFirst();
 		}
 		return mCursor;
+	}
+	
+	public Schedule getScheduleObj(long rowId) throws SQLException {
+		Cursor cur = this.getSchedule(rowId);
+		Schedule sched = new Schedule(cur);
+		return sched;
 	}
 
 	public long createSchedule(Schedule schedule) {
@@ -87,11 +120,12 @@ public class VSAdapterDb {
 		Log.d(TAG, "New schedule being created.");
 		return mDb.insert(Schedule.SCHEDULE_TABLE, null, initialValues);
 	}
-	
+
 	public boolean deleteSchedule(long rowId) {
-		
-		return mDb.delete(Schedule.SCHEDULE_TABLE, Schedule.KEY_ROWID + "=" + rowId, null) > 0;
-	
+
+		return mDb.delete(Schedule.SCHEDULE_TABLE, Schedule.KEY_ROWID + "="
+				+ rowId, null) > 0;
+
 	}
-	
+
 }
