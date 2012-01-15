@@ -23,10 +23,25 @@ public class DisableVolumnReceiver extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		Log.d(TAG, "onReceive activated with intent: " + intent.toString());
 		Bundle bundle = intent.getExtras();
+		
+		Calendar cal = Calendar.getInstance();
+		switch (bundle.getInt("schedule_type")) {
+		case 0:
+			int hours = bundle.getInt("hours");
+			int minutes = bundle.getInt("minutes");
+			
+			cal.add(Calendar.MINUTE, minutes);
+			cal.add(Calendar.HOUR, hours);
+		case 1:
+			int end_hour = bundle.getInt("end_hours");
+			int end_minute = bundle.getInt("end_minutes");
+			
+			cal.set(Calendar.HOUR_OF_DAY, end_hour);
+			cal.set(Calendar.MINUTE, end_minute);
+		}
+		
 		int ringerMode = bundle.getInt("ringer_mode");
-		int hours = bundle.getInt("hours");
-		int minutes = bundle.getInt("minutes");
-		int setRinger = AudioManager.RINGER_MODE_SILENT;
+		int setRinger;
 		switch (ringerMode) {
 		case 0:
 			setRinger = AudioManager.RINGER_MODE_SILENT;
@@ -34,13 +49,14 @@ public class DisableVolumnReceiver extends BroadcastReceiver {
 		case 1:
 			setRinger = AudioManager.RINGER_MODE_VIBRATE;
 			break;
+		default:
+			setRinger = AudioManager.RINGER_MODE_SILENT;
+			break;
 		}
 
 		// set Alarm manager to callback in time period
 		// get a Calendar object with current time
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.MINUTE, minutes);
-		cal.add(Calendar.HOUR, hours);
+		
 		Intent enableIntent = new Intent(context, EnableVolumnReceiver.class);
 		PendingIntent sender = PendingIntent.getBroadcast(context,
 				ENABLE_VOLUME_REQUEST, enableIntent,
@@ -75,6 +91,8 @@ public class DisableVolumnReceiver extends BroadcastReceiver {
 		AudioManager am = (AudioManager) context
 				.getSystemService(Context.AUDIO_SERVICE);
 		am.setRingerMode(setRinger);
+		
+		Log.d(TAG, "Quiet set to be deactivated at: " + cal.getTime().toLocaleString());
 	}
 
 }

@@ -113,7 +113,19 @@ public class VolumnSchedulerListActivity extends ListActivity {
 		menu.add(0, SCHEDULE_DELETE, 0, R.string.context_menu_delete);
 		menu.add(0, SCHEDULE_TOGGLE, 0, R.string.context_menu_toggle);
 	}
-
+	
+	private void sendEnableScheduleBroadcast(Schedule schedule) {
+		Intent intent = new Intent(getApplicationContext(),
+				EnableScheduleReceiver.class);
+		intent.putExtra("schedule_name", schedule.name);
+		intent.putExtra("schedule_days", schedule.getDaysAsInt());
+		intent.putExtra("schedule_start_hour", schedule.getStartHour());
+		intent.putExtra("schedule_start_minute", schedule.getStartMinute());
+		intent.putExtra("schedule_end_hour", schedule.getEndHour());
+		intent.putExtra("schedule_end_minute", schedule.getEndMinute());
+		getApplicationContext().sendBroadcast(intent);
+	}
+	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -127,6 +139,7 @@ public class VolumnSchedulerListActivity extends ListActivity {
 			AdapterContextMenuInfo info1 = (AdapterContextMenuInfo) item
 					.getMenuInfo();
 			mDbHelper.toggleSchedule(info1.id);
+			this.sendEnableScheduleBroadcast(mDbHelper.getScheduleObj(info1.id));
 			fillData();
 			return true;
 		}

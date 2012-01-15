@@ -1,6 +1,8 @@
 package com.vdvreede.VolumnScheduler.Models;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import android.database.Cursor;
@@ -61,6 +63,56 @@ public class Schedule {
 	public void convertDaysString(String days) {
 		String[] dayArray = days.split(",");
 		this.days = Arrays.asList(dayArray);
+	}
+	
+	public int getStartHour() {
+		String hour = this.start.substring(0, 2);
+		return Integer.parseInt(hour);
+	}
+	
+	public int getStartMinute() {
+		String minute = this.start.substring(2, 4);
+		return Integer.parseInt(minute);
+	}
+	
+	public int getEndHour() {
+		String hour = this.end.substring(0, 2);
+		return Integer.parseInt(hour);
+	}
+	
+	public int getEndMinute() {
+		String minute = this.end.substring(2, 4);
+		return Integer.parseInt(minute);
+	}
+	
+	public int[] getDaysAsInt() {
+		int[] intDays = new int[this.days.size()];
+		int i = 0;
+		for (String day : this.days) {
+			if (day.equals("Mon")) {
+				intDays[i] = Calendar.MONDAY;
+    		}
+    		if (day.equals("Tue")) {
+    			intDays[i] = Calendar.TUESDAY;
+    		}
+    		if (day.equals("Wed")) {
+    			intDays[i] = Calendar.WEDNESDAY;
+    		}
+    		if (day.equals("Thu")) {
+    			intDays[i] = Calendar.THURSDAY;
+    		}
+    		if (day.equals("Fri")) {
+    			intDays[i] = Calendar.FRIDAY;
+    		}
+    		if (day.equals("Sat")) {
+    			intDays[i] = Calendar.SATURDAY;
+    		}
+    		if (day.equals("Sun")) {
+    			intDays[i] = Calendar.SUNDAY;
+    		}
+    		i++;
+		}
+		return intDays;		
 	}
 	
 	public String convertDaysArray() {

@@ -125,25 +125,25 @@ public class VSEditActivity extends Activity {
     
     private void populateCheckboxes(List<String> activeDays) {
     	for (String day : activeDays) {
-    		if (day == "Mon") {
+    		if (day.equals("Mon")) {
     			mMon.setChecked(true);
     		}
-    		if (day == "Tue") {
+    		if (day.equals("Tue")) {
     			mTue.setChecked(true);
     		}
-    		if (day == "Wed") {
+    		if (day.equals("Wed")) {
     			mWed.setChecked(true);
     		}
-    		if (day == "Thu") {
+    		if (day.equals("Thu")) {
     			mThu.setChecked(true);
     		}
-    		if (day == "Fri") {
+    		if (day.equals("Fri")) {
     			mFri.setChecked(true);
     		}
-    		if (day == "Sat") {
+    		if (day.equals("Sat")) {
     			mSat.setChecked(true);
     		}
-    		if (day == "Sun") {
+    		if (day.equals("Sun")) {
     			mSun.setChecked(true);
     		}
     	}
