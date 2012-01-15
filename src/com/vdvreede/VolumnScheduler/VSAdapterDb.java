@@ -84,8 +84,14 @@ public class VSAdapterDb {
 		initialValues.put(Schedule.KEY_START, schedule.start);
 		initialValues.put(Schedule.KEY_END, schedule.end);
 		initialValues.put(Schedule.KEY_DAYS, schedule.convertDaysArray());
-
+		Log.d(TAG, "New schedule being created.");
 		return mDb.insert(Schedule.SCHEDULE_TABLE, null, initialValues);
 	}
-
+	
+	public boolean deleteSchedule(long rowId) {
+		
+		return mDb.delete(Schedule.SCHEDULE_TABLE, Schedule.KEY_ROWID + "=" + rowId, null) > 0;
+	
+	}
+	
 }

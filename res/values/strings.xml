@@ -10,5 +10,6 @@
     <string name="ab_schedule">Schedule Quiet</string>
     <string name="settings">Settings</string>
     <string name="vibrate">Vibrate</string>
+    <string name="context_menu_delete">Delete Schedule</string>
 
 </resources>
